@@ -1,0 +1,12 @@
+redis_url = "redis://localhost:6379/0" # required
+
+[[nodes]]
+node_name = "print"
+node_class = "print"
+
+[nodes.node_args.print_channel_types]
+"tick/secs/1" = "tick"
+
+[[nodes]]
+node_name = "tick"
+node_class = "tick"

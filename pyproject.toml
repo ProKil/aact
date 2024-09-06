@@ -1,0 +1,47 @@
+[project]
+name = "aact"
+version = "0.0.1"
+description = "An actor model library for multi-agent/environment interaction in Python based on Redis."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.8.2",
+    "redis>=5.0.8",
+    "types-requests>=2.32.0.20240712",
+    "requests>=2.32.3",
+    "toml>=0.10.2",
+    "types-toml>=0.10.8.20240310",
+    "aiofiles>=24.1.0",
+    "types-aiofiles>=24.1.0.20240626",
+    "aiostream>=0.6.2",
+    "pyaudio>=0.2.14",
+    "types-pyaudio>=0.2.16.20240516",
+    "google-cloud-speech>=2.27.0",
+    "google-cloud-texttospeech>=2.17.2",
+    "rq>=1.16.2",
+    "typer>=0.12.5",
+    "numpy>=2.1.0",
+]
+
+[project.optional-dependencies]
+vision = [
+    "opencv-python"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.11.2",
+]
+
+[tool.mypy]
+plugins = [
+    "pydantic.mypy",
+    "pydantic.v1.mypy",
+]
+
+[project.scripts]
+aact = 'aact.cli:app'
