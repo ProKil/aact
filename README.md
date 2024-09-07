@@ -15,9 +15,16 @@ pip install aact
 
 ### Examples
 #### Tick and print
-```python
+```bash
 docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 aact run-dataflow examples/example.toml
 ```
 
 You will see a tick printed every second.
+
+#### Looped speaker and listener
+```bash
+pip install aact[audio]
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+aact run-dataflow examples/speaker_listener.toml
+```
