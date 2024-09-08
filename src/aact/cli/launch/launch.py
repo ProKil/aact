@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import signal
+import sys
 import time
 from typing import Annotated, Any, Optional, TypeVar
 from ..app import app
@@ -12,7 +13,10 @@ from ...nodes import NodeFactory
 
 from subprocess import Popen
 
-import toml
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomlkit as tomllib
 from rq import Queue
 from rq.exceptions import InvalidJobOperation
 from rq.job import Job
@@ -59,7 +63,7 @@ def run_node(
     redis_url: str = typer.Option(),
 ) -> None:
     logger = logging.getLogger(__name__)
-    config = Config.model_validate(toml.load(dataflow_toml))
+    config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
     # dynamically import extra modules
     for module in config.extra_modules:
@@ -86,11 +90,10 @@ def run_dataflow(
     ),
 ) -> None:
     logger = logging.getLogger(__name__)
-    config = Config.model_validate(toml.load(dataflow_toml))
+    config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
 
     if with_rq:
-
         redis = Redis.from_url(config.redis_url)
         queue = Queue(connection=redis)
         job_ids: list[str] = []
@@ -100,22 +103,28 @@ def run_dataflow(
 
         try:
             # Wait for all jobs to finish
-            while not all(Job.fetch(job_id, connection=redis).get_status() == "finished" for job_id in job_ids):
+            while not all(
+                Job.fetch(job_id, connection=redis).get_status() == "finished"
+                for job_id in job_ids
+            ):
                 time.sleep(1)
         except KeyboardInterrupt:
             logger.warning("Terminating RQ jobs.")
             for job_id in job_ids:
                 logger.info(f"Terminating job {job_id}")
                 try:
-                    send_stop_job_command(redis, job_id) # stop the job if it's running
+                    send_stop_job_command(redis, job_id)  # stop the job if it's running
                 except InvalidJobOperation:
-                    logger.info(f"Job {job_id} is not currently executing. Trying to delete it from queue.")
+                    logger.info(
+                        f"Job {job_id} is not currently executing. Trying to delete it from queue."
+                    )
                 job = Job.fetch(job_id, connection=redis)
-                job.delete() # remove job from redis
-                logger.info(f"Job {job_id} has been terminated. Job status: {job.get_status()}")
+                job.delete()  # remove job from redis
+                logger.info(
+                    f"Job {job_id} has been terminated. Job status: {job.get_status()}"
+                )
         finally:
             return
-            
 
     subprocesses: list[Popen[bytes]] = []
 

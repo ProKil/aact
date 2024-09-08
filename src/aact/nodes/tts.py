@@ -6,14 +6,25 @@ if sys.version_info >= (3, 11):
 else:
     from typing_extensions import Self
 
-from typing import Any, AsyncIterator
+from typing import TYPE_CHECKING, Any, AsyncIterator
 from ..messages.base import Message
 from ..messages.commons import Audio, Text
 from .base import Node
 from .registry import NodeFactory
-from google.cloud import texttospeech
-from google.api_core import exceptions
-from google.api_core.client_options import ClientOptions
+
+if TYPE_CHECKING:
+    from google.cloud import texttospeech
+    from google.api_core import exceptions
+    from google.api_core.client_options import ClientOptions
+
+try:
+    from google.cloud import texttospeech
+    from google.api_core import exceptions
+    from google.api_core.client_options import ClientOptions
+
+    GOOGLE_CLOUD_TEXTTOSPEECH_AVAILABLE = True
+except ImportError:
+    GOOGLE_CLOUD_TEXTTOSPEECH_AVAILABLE = False
 
 
 @NodeFactory.register("tts")
@@ -26,6 +37,11 @@ class TTSNode(Node[Text, Audio]):
         rate: int,
         redis_url: str,
     ) -> None:
+        if not GOOGLE_CLOUD_TEXTTOSPEECH_AVAILABLE:
+            raise ImportError(
+                "Google Cloud Text-to-Speech is not available. Please install"
+                "aact with `pip install aact[google]` to use the TTSNode."
+            )
         super().__init__(
             input_channel_types=[(input_channel, Text)],
             output_channel_types=[(output_channel, Audio)],

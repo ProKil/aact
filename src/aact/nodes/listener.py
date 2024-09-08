@@ -19,16 +19,19 @@ if TYPE_CHECKING:
 # Runtime import
 try:
     import pyaudio
+
     PYAUDIO_AVAILABLE = True
 except ImportError:
     PYAUDIO_AVAILABLE = False
+
 
 @NodeFactory.register("listener")
 class ListenerNode(Node[Zero, Audio]):
     def __init__(self, output_channel: str, redis_url: str):
         if not PYAUDIO_AVAILABLE:
             raise ImportError(
-                "PyAudio is not available. Please install it to use the ListenerNode."
+                "PyAudio is not available."
+                "Please install aact with `pip install aact[audio]` to use the ListenerNode."
             )
 
         super().__init__(
@@ -37,14 +40,14 @@ class ListenerNode(Node[Zero, Audio]):
             redis_url=redis_url,
         )
         self.output_channel = output_channel
-        self.audio: 'pyaudio.PyAudio' = pyaudio.PyAudio() 
-        self.stream: Optional['pyaudio.Stream'] = None
+        self.audio: "pyaudio.PyAudio" = pyaudio.PyAudio()
+        self.stream: Optional["pyaudio.Stream"] = None
         self.queue: asyncio.Queue[bytes] = asyncio.Queue()
         self.task: Optional[asyncio.Task[None]] = None
 
     async def __aenter__(self) -> Self:
         if PYAUDIO_AVAILABLE:
-            self.stream = self.audio.open(  
+            self.stream = self.audio.open(
                 format=pyaudio.paInt16,
                 channels=1,
                 rate=44100,
@@ -57,10 +60,10 @@ class ListenerNode(Node[Zero, Audio]):
 
     async def __aexit__(self, _: Any, __: Any, ___: Any) -> None:
         if self.stream:
-            self.stream.stop_stream() 
-            self.stream.close() 
+            self.stream.stop_stream()
+            self.stream.close()
         if PYAUDIO_AVAILABLE:
-            self.audio.terminate() 
+            self.audio.terminate()
         if self.task:
             self.task.cancel()
             try:

@@ -1,7 +1,12 @@
 import base64
 from collections import defaultdict
 import logging
-import toml
+import sys
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomlkit as tomllib
 from pydantic import BaseModel, ConfigDict, Field
 
 import requests
@@ -36,7 +41,7 @@ def get_dataflow_config(dataflow_toml: str) -> Config:
 
     """
     logger = logging.getLogger(__name__)
-    config = Config.model_validate(toml.load(dataflow_toml))
+    config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
 
     return config
