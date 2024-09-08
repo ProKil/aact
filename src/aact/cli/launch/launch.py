@@ -63,7 +63,7 @@ def run_node(
     redis_url: str = typer.Option(),
 ) -> None:
     logger = logging.getLogger(__name__)
-    config = Config.model_validate(tomllib.load(open(dataflow_toml)))
+    config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
     # dynamically import extra modules
     for module in config.extra_modules:
@@ -90,7 +90,7 @@ def run_dataflow(
     ),
 ) -> None:
     logger = logging.getLogger(__name__)
-    config = Config.model_validate(tomllib.load(open(dataflow_toml)))
+    config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
 
     if with_rq:

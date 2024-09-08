@@ -24,5 +24,4 @@ jobs:
         curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Type-checking package with mypy
       run: |
-        uv run --all-extras mypy --install-types --non-interactive .
         uv run --all-extras mypy --strict .

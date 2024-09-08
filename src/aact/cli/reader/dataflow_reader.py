@@ -41,7 +41,7 @@ def get_dataflow_config(dataflow_toml: str) -> Config:
 
     """
     logger = logging.getLogger(__name__)
-    config = Config.model_validate(tomllib.load(open(dataflow_toml)))
+    config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
 
     return config
