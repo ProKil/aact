@@ -1,19 +1,29 @@
 import asyncio
 import sys
+
 if sys.version_info >= (3, 11):
     from typing import Self
 else:
     from typing_extensions import Self
-from typing import Any, AsyncIterator
+from typing import TYPE_CHECKING, Any, AsyncIterator
 
 from ..messages.base import Message
 from ..messages.commons import Audio, Text
 from .base import Node
 from .registry import NodeFactory
 
-from google.cloud import speech_v1p1beta1 as speech
-from google.api_core import exceptions
-from google.api_core.client_options import ClientOptions
+if TYPE_CHECKING:
+    from google.cloud import speech_v1p1beta1 as speech
+    from google.api_core import exceptions
+    from google.api_core.client_options import ClientOptions
+try:
+    from google.cloud import speech_v1p1beta1 as speech
+    from google.api_core import exceptions
+    from google.api_core.client_options import ClientOptions
+
+    GOOLE_CLOUD_SPEECH_AVAILABLE = True
+except ImportError:
+    GOOLE_CLOUD_SPEECH_AVAILABLE = False
 
 
 @NodeFactory.register("transcriber")
@@ -26,6 +36,11 @@ class TranscriberNode(Node[Audio, Text]):
         api_key: str,
         redis_url: str,
     ) -> None:
+        if not GOOLE_CLOUD_SPEECH_AVAILABLE:
+            raise ImportError(
+                "Google Cloud Speech is not available. Please install"
+                "aact with `pip install aact[google]` to use the TranscriberNode."
+            )
         super().__init__(
             input_channel_types=[(input_channel, Audio)],
             output_channel_types=[(output_channel, Text)],

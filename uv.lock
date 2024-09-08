@@ -25,24 +25,28 @@ source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
     { name = "aiostream" },
-    { name = "google-cloud-speech" },
-    { name = "google-cloud-texttospeech" },
     { name = "numpy" },
     { name = "pydantic" },
     { name = "redis" },
     { name = "requests" },
     { name = "rq" },
-    { name = "toml" },
+    { name = "tomlkit", marker = "python_full_version < '3.11'" },
     { name = "typer" },
-    { name = "types-aiofiles" },
-    { name = "types-requests" },
-    { name = "types-toml" },
 ]
 
 [package.optional-dependencies]
 audio = [
     { name = "pyaudio" },
     { name = "types-pyaudio" },
+]
+google = [
+    { name = "google-cloud-speech" },
+    { name = "google-cloud-texttospeech" },
+]
+typing = [
+    { name = "mypy" },
+    { name = "types-aiofiles" },
+    { name = "types-requests" },
 ]
 vision = [
     { name = "opencv-python" },
@@ -57,8 +61,9 @@ dev = [
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "aiostream", specifier = ">=0.6.2" },
-    { name = "google-cloud-speech", specifier = ">=2.27.0" },
-    { name = "google-cloud-texttospeech", specifier = ">=2.17.2" },
+    { name = "google-cloud-speech", marker = "extra == 'google'", specifier = ">=2.27.0" },
+    { name = "google-cloud-texttospeech", marker = "extra == 'google'", specifier = ">=2.17.2" },
+    { name = "mypy", marker = "extra == 'typing'", specifier = ">=0.910" },
     { name = "numpy", specifier = ">=2.1.0" },
     { name = "opencv-python", marker = "extra == 'vision'" },
     { name = "pyaudio", marker = "extra == 'audio'", specifier = ">=0.2.14" },
@@ -66,12 +71,11 @@ requires-dist = [
     { name = "redis", specifier = ">=5.0.8" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "rq", specifier = ">=1.16.2" },
-    { name = "toml", specifier = ">=0.10.2" },
+    { name = "tomlkit", marker = "python_full_version < '3.11'", specifier = ">=0.13.0" },
     { name = "typer", specifier = ">=0.12.5" },
-    { name = "types-aiofiles", specifier = ">=24.1.0.20240626" },
+    { name = "types-aiofiles", marker = "extra == 'typing'", specifier = ">=24.1.0.20240626" },
     { name = "types-pyaudio", marker = "extra == 'audio'", specifier = ">=0.2.16.20240516" },
-    { name = "types-requests", specifier = ">=2.32.0.20240712" },
-    { name = "types-toml", specifier = ">=0.10.8.20240310" },
+    { name = "types-requests", marker = "extra == 'typing'", specifier = ">=2.32.0.20240712" },
 ]
 
 [package.metadata.requires-dev]
@@ -706,21 +710,21 @@ wheels = [
 ]
 
 [[package]]
-name = "toml"
-version = "0.10.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c/toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f", size = 22253 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b", size = 16588 },
-]
-
-[[package]]
 name = "tomli"
 version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c0/3f/d7af728f075fb08564c5949a9c95e44352e23dee646869fa104a3b2060a3/tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f", size = 15164 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc", size = 12757 },
+]
+
+[[package]]
+name = "tomlkit"
+version = "0.13.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/09/a439bec5888f00a54b8b9f05fa94d7f901d6735ef4e55dcec9bc37b5d8fa/tomlkit-0.13.2.tar.gz", hash = "sha256:fff5fe59a87295b278abd31bec92c15d9bc4a06885ab12bcea52c71119392e79", size = 192885 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f9/b6/a447b5e4ec71e13871be01ba81f5dfc9d0af7e473da256ff46bc0e24026f/tomlkit-0.13.2-py3-none-any.whl", hash = "sha256:7a974427f6e119197f670fbbbeae7bef749a6c14e793db934baefc1b5f03efde", size = 37955 },
 ]
 
 [[package]]
@@ -766,15 +770,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5e/9e/7663eb27c33568b8fc20ccdaf2a1ce53a9530c42a7cceb9f552a6ff4a1d8/types-requests-2.32.0.20240712.tar.gz", hash = "sha256:90c079ff05e549f6bf50e02e910210b98b8ff1ebdd18e19c873cd237737c1358", size = 17896 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/30/4d/cbed87a6912fbd9259ce23a5d4aa1de9816edf75eec6ed9a757c00906c8e/types_requests-2.32.0.20240712-py3-none-any.whl", hash = "sha256:f754283e152c752e46e70942fa2a146b5bc70393522257bb85bd1ef7e019dcc3", size = 15816 },
-]
-
-[[package]]
-name = "types-toml"
-version = "0.10.8.20240310"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/86/47/3e4c75042792bff8e90d7991aa5c51812cc668828cc6cce711e97f63a607/types-toml-0.10.8.20240310.tar.gz", hash = "sha256:3d41501302972436a6b8b239c850b26689657e25281b48ff0ec06345b8830331", size = 4392 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/a2/d32ab58c0b216912638b140ab2170ee4b8644067c293b170e19fba340ccc/types_toml-0.10.8.20240310-py3-none-any.whl", hash = "sha256:627b47775d25fa29977d9c70dc0cbab3f314f32c8d8d0c012f2ef5de7aaec05d", size = 4777 },
 ]
 
 [[package]]
