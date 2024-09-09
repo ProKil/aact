@@ -1,3 +1,5 @@
+from asyncio import CancelledError
+import logging
 import sys
 
 if sys.version_info >= (3, 11):
@@ -15,6 +17,10 @@ from ..messages.base import DataModel
 
 InputType = TypeVar("InputType", covariant=True, bound=DataModel)
 OutputType = TypeVar("OutputType", covariant=True, bound=DataModel)
+
+
+class NodeExitSignal(CancelledError):
+    """Node exit signal, which is raised in nodes' event handler. It is used to exit the node gracefully."""
 
 
 class Node(BaseModel, Generic[InputType, OutputType]):
@@ -37,6 +43,7 @@ class Node(BaseModel, Generic[InputType, OutputType]):
 
         self.r: Redis = Redis.from_url(redis_url)
         self.pubsub = self.r.pubsub()
+        self.logger = logging.getLogger("aact.nodes.base.Node")
 
     async def __aenter__(self) -> Self:
         try:
@@ -67,12 +74,18 @@ class Node(BaseModel, Generic[InputType, OutputType]):
     async def event_loop(
         self,
     ) -> None:
-        async for input_channel, input_message in self._wait_for_input():
-            async for output_channel, output_message in self.event_handler(
-                input_channel, input_message
-            ):
-                await self.r.publish(output_channel, output_message.model_dump_json())
-        raise Exception("Event loop exited unexpectedly")
+        try:
+            async for input_channel, input_message in self._wait_for_input():
+                async for output_channel, output_message in self.event_handler(
+                    input_channel, input_message
+                ):
+                    await self.r.publish(
+                        output_channel, output_message.model_dump_json()
+                    )
+        except NodeExitSignal as e:
+            self.logger.info(f"Event loop cancelled: {e}. Exiting gracefully.")
+        except Exception as e:
+            raise e
 
     @abstractmethod
     async def event_handler(
