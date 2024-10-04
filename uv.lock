@@ -20,7 +20,7 @@ resolution-markers = [
 
 [[package]]
 name = "aact"
-version = "0.0.3"
+version = "0.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -62,6 +62,9 @@ vision = [
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
+    { name = "types-aiofiles" },
+    { name = "types-pyaudio" },
+    { name = "types-requests" },
 ]
 
 [package.metadata]
@@ -72,7 +75,7 @@ requires-dist = [
     { name = "google-cloud-texttospeech", marker = "extra == 'google'", specifier = ">=2.17.2" },
     { name = "mypy", marker = "extra == 'typing'", specifier = ">=0.910" },
     { name = "nicegui", marker = "extra == 'gui'" },
-    { name = "numpy", specifier = ">=2.1.0" },
+    { name = "numpy", specifier = ">=1.24.0" },
     { name = "openai", marker = "extra == 'ai'" },
     { name = "opencv-python", marker = "extra == 'vision'" },
     { name = "pyaudio", marker = "extra == 'audio'", specifier = ">=0.2.14" },
@@ -89,7 +92,12 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "mypy", specifier = ">=1.11.2" }]
+dev = [
+    { name = "mypy", specifier = ">=1.11.2" },
+    { name = "types-aiofiles" },
+    { name = "types-pyaudio" },
+    { name = "types-requests" },
+]
 
 [[package]]
 name = "aiofiles"
