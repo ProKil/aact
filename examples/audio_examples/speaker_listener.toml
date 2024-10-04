@@ -1,0 +1,17 @@
+redis_url = "redis://localhost:6379/0"
+
+[[nodes]]
+node_name = "speaker"
+node_class = "speaker"
+
+
+[nodes.node_args]
+input_channel = "audio_input"
+
+[[nodes]]
+node_name = "listener"
+node_class = "listener"
+
+
+[nodes.node_args]
+output_channel = "audio_input"

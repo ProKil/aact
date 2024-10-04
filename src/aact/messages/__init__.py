@@ -1,5 +1,5 @@
 from .base import Message, DataModel
-from .commons import Zero, Tick, Image, Float, Audio
+from .commons import Zero, Tick, Image, Float, Audio, Text
 from .registry import DataModelFactory
 
 __all__ = [
@@ -11,4 +11,5 @@ __all__ = [
     "DataModelFactory",
     "DataModel",
     "Audio",
+    "Text",
 ]
