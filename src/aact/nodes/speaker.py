@@ -29,6 +29,9 @@ class SpeakerNode(Node[Audio, Zero]):
         self,
         input_channel: str,
         redis_url: str,
+        channels: int = 1,
+        rate: int = 44100,
+        format: int = pyaudio.paInt16,
     ):
         if not PYAUDIO_AVAILABLE:
             raise ImportError(
@@ -44,11 +47,14 @@ class SpeakerNode(Node[Audio, Zero]):
         self.input_channel = input_channel
         self.audio: "pyaudio.PyAudio" = pyaudio.PyAudio()
         self.stream: Optional["pyaudio.Stream"] = None
+        self.channels = channels
+        self.rate = rate
+        self.format = format
 
     async def __aenter__(self) -> Self:
         if PYAUDIO_AVAILABLE:
             self.stream = self.audio.open(
-                format=pyaudio.paInt16, channels=1, rate=44100, output=True
+                format=self.format, channels=self.channels, rate=self.rate, output=True
             )
         return await super().__aenter__()
 

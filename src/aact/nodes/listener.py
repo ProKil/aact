@@ -27,7 +27,14 @@ except ImportError:
 
 @NodeFactory.register("listener")
 class ListenerNode(Node[Zero, Audio]):
-    def __init__(self, output_channel: str, redis_url: str):
+    def __init__(
+        self,
+        output_channel: str,
+        redis_url: str,
+        channels: int = 1,
+        rate: int = 44100,
+        format: int = pyaudio.paInt16,
+    ):
         if not PYAUDIO_AVAILABLE:
             raise ImportError(
                 "PyAudio is not available."
@@ -44,13 +51,16 @@ class ListenerNode(Node[Zero, Audio]):
         self.stream: Optional["pyaudio.Stream"] = None
         self.queue: asyncio.Queue[bytes] = asyncio.Queue()
         self.task: Optional[asyncio.Task[None]] = None
+        self.channels = channels
+        self.rate = rate
+        self.format = format
 
     async def __aenter__(self) -> Self:
         if PYAUDIO_AVAILABLE:
             self.stream = self.audio.open(
-                format=pyaudio.paInt16,
-                channels=1,
-                rate=44100,
+                format=self.format,
+                channels=self.channels,
+                rate=self.rate,
                 input=True,
                 frames_per_buffer=1024,
                 stream_callback=self.callback,
