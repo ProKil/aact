@@ -26,10 +26,10 @@ from redis import Redis
 InputType = TypeVar("InputType")
 OutputType = TypeVar("OutputType")
 
+logger = logging.getLogger(__name__)
+
 
 async def _run_node(node_config: NodeConfig, redis_url: str) -> None:
-    logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
     logger.info(f"Starting node {node_config}")
     try:
         async with NodeFactory.make(
@@ -88,7 +88,12 @@ def run_dataflow(
     with_rq: Optional[bool] = typer.Option(
         False, help="Run the dataflow with RQ instead of asyncio."
     ),
+    verbose: Optional[bool] = typer.Option(
+        False, help="Print verbose logging for debugging."
+    ),
 ) -> None:
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
     config = Config.model_validate(tomllib.load(open(dataflow_toml, "rb")))
     logger.info(f"Starting dataflow with config {config}")
