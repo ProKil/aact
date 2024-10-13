@@ -33,7 +33,7 @@ class ListenerNode(Node[Zero, Audio]):
         redis_url: str,
         channels: int = 1,
         rate: int = 44100,
-        format: int = pyaudio.paInt16,
+        format: int = pyaudio.paInt16 if PYAUDIO_AVAILABLE else 0,
     ):
         if not PYAUDIO_AVAILABLE:
             raise ImportError(
