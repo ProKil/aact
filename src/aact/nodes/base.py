@@ -7,7 +7,7 @@ if sys.version_info >= (3, 11):
 else:
     from typing_extensions import Self
 from typing import Any, AsyncIterator, Generic, Type, TypeVar
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
 
 from abc import abstractmethod
 from ..messages import Message
@@ -23,6 +23,10 @@ class NodeExitSignal(CancelledError):
     """Node exit signal, which is raised in nodes' event handler. It is used to exit the node gracefully."""
 
 
+class NodeConfigurationError(Exception):
+    """Node configuration error, which is raised when the node configuration is incorrect."""
+
+
 class Node(BaseModel, Generic[InputType, OutputType]):
     input_channel_types: dict[str, Type[InputType]]
     output_channel_types: dict[str, Type[OutputType]]
@@ -35,11 +39,20 @@ class Node(BaseModel, Generic[InputType, OutputType]):
         output_channel_types: list[tuple[str, Type[OutputType]]],
         redis_url: str = "redis://localhost:6379/0",
     ):
-        super().__init__(
-            input_channel_types=dict(input_channel_types),
-            output_channel_types=dict(output_channel_types),
-            redis_url=redis_url,
-        )
+        try:
+            super().__init__(
+                input_channel_types=dict(input_channel_types),
+                output_channel_types=dict(output_channel_types),
+                redis_url=redis_url,
+            )
+        except ValidationError as _:
+            raise NodeConfigurationError(
+                "You passed an invalid configuration to the Node.\n"
+                f"The required input channel types are: {self.model_fields['input_channel_types'].annotation}\n"
+                f"The input channel types are: {input_channel_types}\n"
+                f"The required output channel types are: {self.model_fields['output_channel_types'].annotation}\n"
+                f"The output channel types are: {output_channel_types}\n"
+            )
 
         self.r: Redis = Redis.from_url(redis_url)
         self.pubsub = self.r.pubsub()
