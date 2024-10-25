@@ -1,3 +1,11 @@
+"""
+@public
+
+Nodes are the basic computation units in the AAct library.
+A node specifies the input and output channels and types.
+All nodes must inherit from the `aact.Node` class.
+"""
+
 from .base import Node
 from .tick import TickNode
 from .random import RandomNode

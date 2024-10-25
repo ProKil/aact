@@ -20,7 +20,7 @@ resolution-markers = [
 
 [[package]]
 name = "aact"
-version = "0.0.4"
+version = "0.0.9"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -41,6 +41,9 @@ ai = [
 audio = [
     { name = "pyaudio" },
     { name = "types-pyaudio" },
+]
+doc = [
+    { name = "pdoc" },
 ]
 google = [
     { name = "google-cloud-speech" },
@@ -78,6 +81,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.24.0" },
     { name = "openai", marker = "extra == 'ai'" },
     { name = "opencv-python", marker = "extra == 'vision'" },
+    { name = "pdoc", marker = "extra == 'doc'", specifier = ">=15.0.0,<16.0.0" },
     { name = "pyaudio", marker = "extra == 'audio'", specifier = ">=0.2.14" },
     { name = "pydantic", specifier = ">=2.8.2" },
     { name = "pywebview", marker = "extra == 'gui'", specifier = ">=3.4.0" },
@@ -1129,6 +1133,20 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/51/65/50db4dda066951078f0a96cf12f4b9ada6e4b811516bf0262c0f4f7064d4/packaging-24.1.tar.gz", hash = "sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002", size = 148788 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl", hash = "sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124", size = 53985 },
+]
+
+[[package]]
+name = "pdoc"
+version = "15.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "markupsafe" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/4a/b645514246e487a02f211023d2fc1f019a25cdd2bf2f4266ff5e92c54f41/pdoc-15.0.0.tar.gz", hash = "sha256:b761220d3ba129cd87e6da1bb7b62c8e799973ab9c595de7ba1a514850d86da5", size = 154109 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3d/4a/e4a5490bb6d39214cd7778dfd8cf6b353b94f17aafa703bd1d11673ea025/pdoc-15.0.0-py3-none-any.whl", hash = "sha256:151b0187a25eaf827099e981d6dbe3a4f68aeb18d0d637c24edcab788d5540f1", size = 144184 },
 ]
 
 [[package]]

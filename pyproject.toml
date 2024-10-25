@@ -43,6 +43,9 @@ gui = [
 ai = [
     "openai"
 ]
+doc = [
+    "pdoc>=15.0.0, <16.0.0",
+]
 
 [build-system]
 requires = ["hatchling"]
