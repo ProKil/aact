@@ -18,7 +18,7 @@ class DataModelFactory:
             if name in cls.registry:
                 logger.warning("DataModel %s already exists. Will replace it", name)
             new_class = create_model(
-                cls.__name__,
+                wrapped_class.__name__,
                 __base__=wrapped_class,
                 data_type=(Literal[name], name),
             )

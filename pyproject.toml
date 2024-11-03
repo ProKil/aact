@@ -57,6 +57,7 @@ dev-dependencies = [
     "types-pyaudio",
     "types-aiofiles",
     "types-requests",
+    "pytest"
 ]
 
 [tool.mypy]

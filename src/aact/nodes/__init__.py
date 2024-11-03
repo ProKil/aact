@@ -17,6 +17,7 @@ from .performance import PerformanceMeasureNode
 from .print import PrintNode
 from .tts import TTSNode
 from .registry import NodeFactory
+from .api import RestAPINode
 
 __all__ = [
     "Node",
@@ -30,4 +31,5 @@ __all__ = [
     "PerformanceMeasureNode",
     "PrintNode",
     "TTSNode",
+    "RestAPINode",
 ]

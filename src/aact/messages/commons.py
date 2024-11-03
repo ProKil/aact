@@ -3,12 +3,25 @@ from typing import Any, Annotated, Generic, TypeVar
 
 from .registry import DataModelFactory
 from .base import DataModel
-from pydantic import Field, PlainValidator, PlainSerializer, WithJsonSchema, BaseModel
+from pydantic import (
+    ConfigDict,
+    Field,
+    PlainValidator,
+    PlainSerializer,
+    WithJsonSchema,
+    BaseModel,
+    create_model,
+)
 
 
 @DataModelFactory.register("zero")
 class Zero(DataModel):
     pass
+
+
+@DataModelFactory.register("any")
+class AnyDataModel(DataModel):
+    model_config = ConfigDict(extra="allow")
 
 
 @DataModelFactory.register("tick")
@@ -61,3 +74,35 @@ class DataEntry(BaseModel, Generic[T]):
     timestamp: datetime = Field(default_factory=datetime.now)
     channel: str
     data: T
+
+
+@DataModelFactory.register("rest_request")
+class RestRequest(DataModel):
+    url: str
+    method: str
+    data: DataModel | None
+    content_type: str = Field(default="application/json")
+
+
+@DataModelFactory.register("rest_response")
+class RestResponse(DataModel):
+    status_code: int
+    data: DataModel | None
+
+
+def get_rest_request_class(data_model: type[T]) -> type[RestRequest]:
+    new_class = create_model(
+        f"RestRequest[{data_model.__name__}]",
+        __base__=RestRequest,
+        data=(data_model | None, None),
+    )
+    return new_class
+
+
+def get_rest_response_class(data_model: type[T]) -> type[RestResponse]:
+    new_class = create_model(
+        f"RestResponse[{data_model.__name__}]",
+        __base__=RestResponse,
+        data=(data_model | None, None),
+    )
+    return new_class
