@@ -210,10 +210,8 @@ class Node(BaseModel, Generic[InputType, OutputType]):
             if message["type"] == "message" and channel in self.input_channel_types:
                 try:
                     data = Message[
-                        self.input_channel_types[channel]
-                    ].model_validate_json(  # type: ignore
-                        message["data"]
-                    )
+                        self.input_channel_types[channel]  # type: ignore[name-defined]
+                    ].model_validate_json(message["data"])
                 except ValidationError as e:
                     self.logger.error(
                         f"Failed to validate message from {channel}: {message['data']}. Error: {e}"

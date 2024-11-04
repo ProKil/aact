@@ -36,7 +36,7 @@ class APIClient(Node[Tick | RestResponse, RestRequest]):
         self.input_tick_channel = input_tick_channel
         self.input_response_channel = input_response_channel
         self.output_channel = output_channel
-        self.output_message_type: type[Message[RestRequest]] = Message[request_class]  # type: ignore[valid-type, assignment]
+        self.output_message_type: type[Message[RestRequest]] = Message[request_class]  # type: ignore[valid-type]
 
     async def event_handler(
         self, channel: str, message: Message[RestResponse | Tick]
