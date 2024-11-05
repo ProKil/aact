@@ -24,6 +24,7 @@ version = "0.0.10"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
+    { name = "aiohttp" },
     { name = "aiostream" },
     { name = "numpy" },
     { name = "pydantic" },
@@ -74,6 +75,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
+    { name = "aiohttp", specifier = ">=3.10.5" },
     { name = "aiostream", specifier = ">=0.5.2" },
     { name = "google-cloud-speech", marker = "extra == 'google'", specifier = ">=2.27.0" },
     { name = "google-cloud-texttospeech", marker = "extra == 'google'", specifier = ">=2.17.2" },
