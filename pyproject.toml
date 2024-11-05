@@ -46,6 +46,11 @@ ai = [
 ]
 doc = [
     "pdoc>=15.0.0, <16.0.0",
+    "mike",
+    "mkdocs-exclude",
+    "mkdocs-material[imaging]",
+    "mkdocstrings[python]",
+    "mkdocs-material[doc]>=9.5.43",
 ]
 
 [build-system]
