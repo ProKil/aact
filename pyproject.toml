@@ -71,6 +71,9 @@ plugins = [
     "pydantic.mypy",
     "pydantic.v1.mypy",
 ]
+exclude = [
+    "docs"
+]
 
 [project.scripts]
 aact = 'aact.cli:app'
