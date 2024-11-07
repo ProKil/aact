@@ -25,4 +25,4 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install uv
-      - run: uv run --extra doc mike deploy --push --update-aliases ${{ github.event.release.tag_name }} latest
+      - run: uv run --extra doc mike deploy --push --ignore-remote-status --update-aliases ${{ github.event.release.tag_name }} latest
