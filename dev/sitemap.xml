@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://aact.dev/latest/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/install/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/usage/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/why/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/api/cli/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/api/messages/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/api/nodes/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+    <url>
+         <loc>https://aact.dev/latest/applications/robot-teleoperation/</loc>
+         <lastmod>2024-11-07</lastmod>
+    </url>
+</urlset>
