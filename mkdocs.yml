@@ -80,6 +80,9 @@ nav:
     - Messages: api/messages.md
   - AAct CLI:
     - Commands: api/cli.md
+- Applications:
+  - Robotics:
+    - Robot Teleoperation: applications/robot-teleoperation.md
 
 plugins:
 - social
