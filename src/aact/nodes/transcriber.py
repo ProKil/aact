@@ -1,10 +1,6 @@
 import asyncio
-import sys
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 from typing import TYPE_CHECKING, Any, AsyncIterator
 
 from ..messages.base import Message
@@ -34,6 +30,7 @@ class TranscriberNode(Node[Audio, Text]):
         output_channel: str,
         rate: int,
         api_key: str,
+        node_name: str,
         redis_url: str,
     ) -> None:
         if not GOOLE_CLOUD_SPEECH_AVAILABLE:
@@ -44,6 +41,7 @@ class TranscriberNode(Node[Audio, Text]):
         super().__init__(
             input_channel_types=[(input_channel, Audio)],
             output_channel_types=[(output_channel, Text)],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.input_channel = input_channel

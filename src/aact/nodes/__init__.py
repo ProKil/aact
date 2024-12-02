@@ -18,6 +18,7 @@ from .print import PrintNode
 from .tts import TTSNode
 from .registry import NodeFactory
 from .api import RestAPINode
+from .special_print import SpecialPrintNode
 
 __all__ = [
     "Node",
@@ -32,4 +33,5 @@ __all__ = [
     "PrintNode",
     "TTSNode",
     "RestAPINode",
+    "SpecialPrintNode",
 ]

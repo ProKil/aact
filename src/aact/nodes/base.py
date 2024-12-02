@@ -1,16 +1,13 @@
 from asyncio import CancelledError
+import asyncio
 import logging
-import sys
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 from typing import Any, AsyncIterator, Generic, Type, TypeVar
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from abc import abstractmethod
-from ..messages import Message
+from ..messages import Message, Tick
 from redis.asyncio import Redis
 
 from ..messages.base import DataModel
@@ -145,6 +142,10 @@ class Node(BaseModel, Generic[InputType, OutputType]):
     """
     A dictionary that maps the output channel names to the corresponding output message types.
     """
+    node_name: str
+    """
+    The name of the node. When using NodeManger, the node name should be unique.
+    """
     redis_url: str
     """
     The URL of the Redis server. It should be in the format of `redis://<host>:<port>/<db>`.
@@ -158,12 +159,15 @@ class Node(BaseModel, Generic[InputType, OutputType]):
         self,
         input_channel_types: list[tuple[str, Type[InputType]]],
         output_channel_types: list[tuple[str, Type[OutputType]]],
+        node_name: str,
         redis_url: str = "redis://localhost:6379/0",
     ):
         try:
-            super().__init__(
+            BaseModel.__init__(
+                self,
                 input_channel_types=dict(input_channel_types),
                 output_channel_types=dict(output_channel_types),
+                node_name=node_name,
                 redis_url=redis_url,
             )
         except ValidationError as _:
@@ -174,7 +178,6 @@ class Node(BaseModel, Generic[InputType, OutputType]):
                 f"The required output channel types are: {self.model_fields['output_channel_types'].annotation}\n"
                 f"The output channel types are: {output_channel_types}\n"
             )
-
         self.r: Redis = Redis.from_url(redis_url)
         """
         @private
@@ -187,6 +190,7 @@ class Node(BaseModel, Generic[InputType, OutputType]):
         """
         @private
         """
+        self._background_tasks: list[asyncio.Task[None]] = []
 
     async def __aenter__(self) -> Self:
         try:
@@ -196,11 +200,26 @@ class Node(BaseModel, Generic[InputType, OutputType]):
                 f"Could not connect to Redis with the provided url. {self.redis_url}"
             )
         await self.pubsub.subscribe(*self.input_channel_types.keys())
+        self._background_tasks.append(asyncio.create_task(self._send_heartbeat()))
         return self
 
     async def __aexit__(self, _: Any, __: Any, ___: Any) -> None:
+        for task in self._background_tasks:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
         await self.pubsub.unsubscribe()
         await self.r.aclose()
+
+    async def _send_heartbeat(self) -> None:
+        while True:
+            await asyncio.sleep(1)
+            await self.r.publish(
+                f"heartbeat:{self.node_name}",
+                Message[Tick](data=Tick(tick=0)).model_dump_json(),
+            )
 
     async def _wait_for_input(
         self,

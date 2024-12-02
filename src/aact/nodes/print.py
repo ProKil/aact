@@ -1,10 +1,6 @@
 import asyncio
-import sys
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 from typing import Any, AsyncIterator
 
 from ..messages.commons import DataEntry
@@ -23,6 +19,7 @@ class PrintNode(Node[DataModel, Zero]):
     def __init__(
         self,
         print_channel_types: dict[str, str],
+        node_name: str,
         redis_url: str,
     ):
         input_channel_types: list[tuple[str, type[DataModel]]] = []
@@ -34,6 +31,7 @@ class PrintNode(Node[DataModel, Zero]):
         super().__init__(
             input_channel_types=input_channel_types,
             output_channel_types=[],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.output: AsyncTextIndirectIOWrapper | None = None

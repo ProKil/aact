@@ -1,11 +1,6 @@
-import sys
 from typing import Any, AsyncIterator, Optional, TYPE_CHECKING
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
-
+from ..utils import Self
 from .base import Node
 from .registry import NodeFactory
 from ..messages import Audio, Zero, Message
@@ -28,6 +23,7 @@ class SpeakerNode(Node[Audio, Zero]):
     def __init__(
         self,
         input_channel: str,
+        node_name: str,
         redis_url: str,
         channels: int = 1,
         rate: int = 44100,
@@ -42,6 +38,7 @@ class SpeakerNode(Node[Audio, Zero]):
         super().__init__(
             input_channel_types=[(input_channel, Audio)],
             output_channel_types=[],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.input_channel = input_channel

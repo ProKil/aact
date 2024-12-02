@@ -1,11 +1,7 @@
 import asyncio
 from datetime import datetime
-import sys
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 from typing import Any, AsyncIterator
 
 from ..messages.commons import DataEntry
@@ -26,6 +22,7 @@ class RecordNode(Node[DataModel, Zero]):
         self,
         record_channel_types: dict[str, str],
         jsonl_file_path: str,
+        node_name: str,
         redis_url: str,
         add_datetime: bool = True,
     ):
@@ -45,6 +42,7 @@ class RecordNode(Node[DataModel, Zero]):
         super().__init__(
             input_channel_types=input_channel_types,
             output_channel_types=[],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.jsonl_file_path = jsonl_file_path
