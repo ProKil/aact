@@ -21,7 +21,7 @@ logger = Logger("NodeManager")
 Health = Literal["Started", "Running", "No Response", "Stopped"]
 
 
-def run_event_loop_in_thread():
+def run_event_loop_in_thread() -> None:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_forever()
@@ -39,7 +39,7 @@ class NodeManager(object):
         self.with_rq = with_rq
         self.subprocesses: dict[str, Popen[bytes]] = {}
         self.pubsub = Redis.from_url(redis_url).pubsub()
-        self.shutdown_pubsub = SyncRedis.from_url(redis_url).pubsub()
+        self.shutdown_pubsub = SyncRedis.from_url(redis_url).pubsub()  # type: ignore[no-untyped-call]
         self.background_tasks: list[asyncio.Task[None]] = []
         self.node_health: dict[str, Health] = {}
         self.last_heartbeat: dict[str, float] = {}
