@@ -18,6 +18,7 @@ class APIClient(Node[Tick | RestResponse, RestRequest]):
         input_tick_channel: str,
         input_response_channel: str,
         output_channel: str,
+        node_name: str,
         redis_url: str,
     ):
         response_class = get_rest_response_class(AnyDataModel)
@@ -28,6 +29,7 @@ class APIClient(Node[Tick | RestResponse, RestRequest]):
                 (input_response_channel, response_class),
             ],
             output_channel_types=[(output_channel, request_class)],
+            node_name=node_name,
             redis_url=redis_url,
         )
 

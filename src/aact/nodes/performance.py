@@ -10,7 +10,12 @@ import os
 @NodeFactory.register("performance")
 class PerformanceMeasureNode(Node[Tick | Image, Image]):
     def __init__(
-        self, input_channel: str, output_channel: str, message_size: int, redis_url: str
+        self,
+        input_channel: str,
+        output_channel: str,
+        message_size: int,
+        node_name: str,
+        redis_url: str,
     ):
         super().__init__(
             input_channel_types=[
@@ -18,6 +23,7 @@ class PerformanceMeasureNode(Node[Tick | Image, Image]):
                 (output_channel, Image),
             ],
             output_channel_types=[(output_channel, Image)],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.input_channel = input_channel

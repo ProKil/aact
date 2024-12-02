@@ -1,10 +1,6 @@
 import asyncio
-import sys
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 
 from typing import TYPE_CHECKING, Any, AsyncIterator
 from ..messages.base import Message
@@ -35,6 +31,7 @@ class TTSNode(Node[Text, Audio]):
         output_channel: str,
         api_key: str,
         rate: int,
+        node_name: str,
         redis_url: str,
     ) -> None:
         if not GOOGLE_CLOUD_TEXTTOSPEECH_AVAILABLE:
@@ -45,6 +42,7 @@ class TTSNode(Node[Text, Audio]):
         super().__init__(
             input_channel_types=[(input_channel, Text)],
             output_channel_types=[(output_channel, Audio)],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.input_channel = input_channel

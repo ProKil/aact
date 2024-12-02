@@ -7,10 +7,13 @@ from openai import OpenAI
 
 @NodeFactory.register("gpt4_text_chatbot_node")
 class GPT4TextChatbotNode(Node[Text, Text]):
-    def __init__(self, input_channel: str, output_channel: str, redis_url: str):
+    def __init__(
+        self, input_channel: str, output_channel: str, node_name: str, redis_url: str
+    ):
         super().__init__(
             input_channel_types=[(input_channel, Text)],
             output_channel_types=[(output_channel, Text)],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.input_channel = input_channel

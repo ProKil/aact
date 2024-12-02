@@ -1,10 +1,6 @@
 import asyncio
-import sys
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 from typing import AsyncIterator
 
 from ..messages import Tick, Message, Zero
@@ -15,7 +11,7 @@ import time
 
 @NodeFactory.register("tick")
 class TickNode(Node[Zero, Tick]):
-    def __init__(self, redis_url: str = "redis://localhost:6379/0"):
+    def __init__(self, node_name: str, redis_url: str = "redis://localhost:6379/0"):
         super().__init__(
             input_channel_types=[],
             output_channel_types=[
@@ -26,6 +22,7 @@ class TickNode(Node[Zero, Tick]):
                 ("tick/millis/100", Tick),
                 ("tick/secs/1", Tick),
             ],
+            node_name=node_name,
             redis_url=redis_url,
         )
 
