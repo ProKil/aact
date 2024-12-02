@@ -2,6 +2,8 @@ import sys
 
 
 if sys.version_info >= (3, 11):
-    pass
+    import tomllib
 else:
-    pass
+    import tomlkit as tomllib
+
+__all__ = ["tomllib"]
