@@ -136,15 +136,15 @@ class Node(BaseModel, Generic[InputType, OutputType]):
     ### Shutdown nodes
 
     The default method for stopping nodes is through shutting down the subprocesses or RQ jobs. When you want to bring
-    down the dataflow, you can `Ctrl + c` to turn off the nodes gracefully. 
+    down the dataflow, you can `Ctrl + c` to turn off the nodes gracefully.
 
-    To shutdown a node itself, you can return from its event loop programatically when a certain condition is reached. 
+    To shutdown a node itself, you can return from its event loop programatically when a certain condition is reached.
 
     #### Experimental feature: Peer-stopping
-    
+
     An experimental feature is peer-stopping. A node can not only stop itself but also other nodes. To do this, send
     a message to the channel `f"shutdown:{self.node_name}"` and the node manager will shutdown all of the nodes in the
-    current dataflow. 
+    current dataflow.
     """
 
     input_channel_types: dict[str, Type[InputType]]
