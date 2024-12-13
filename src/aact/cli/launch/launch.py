@@ -1,27 +1,23 @@
 import asyncio
 import logging
-import os
-import signal
-import sys
 import time
-from typing import Annotated, Any, Optional, TypeVar
+from typing import Annotated, Optional, TypeVar
 from ..app import app
 from ..reader import get_dataflow_config, draw_dataflow_mermaid, NodeConfig, Config
 import typer
 
 from ...nodes import NodeFactory
 
-from subprocess import Popen
 
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomlkit as tomllib
+from ...utils import tomllib
+
 from rq import Queue
 from rq.exceptions import InvalidJobOperation
 from rq.job import Job
 from rq.command import send_stop_job_command
 from redis import Redis
+
+from ...manager import NodeManager
 
 InputType = TypeVar("InputType")
 OutputType = TypeVar("OutputType")
@@ -35,6 +31,7 @@ async def _run_node(node_config: NodeConfig, redis_url: str) -> None:
         async with NodeFactory.make(
             node_config.node_class,
             **node_config.node_args.model_dump(),
+            node_name=node_config.node_name,
             redis_url=redis_url,
         ) as node:
             logger.info(f"Starting eventloop {node_config.node_name}")
@@ -131,43 +128,8 @@ def run_dataflow(
         finally:
             return
 
-    subprocesses: list[Popen[bytes]] = []
-
-    try:
-        # Nodes that run w/ subprocess
-        for node in config.nodes:
-            command = f"aact run-node --dataflow-toml {dataflow_toml} --node-name {node.node_name} --redis-url {config.redis_url}"
-            logger.info(f"executing {command}")
-            node_process = Popen(
-                [command],
-                shell=True,
-                preexec_fn=os.setsid,  # Start the subprocess in a new process group
-            )
-            subprocesses.append(node_process)
-
-        def _cleanup_subprocesses(
-            signum: int | None = None, frame: Any | None = None
-        ) -> None:
-            for node_process in subprocesses:
-                try:
-                    os.killpg(os.getpgid(node_process.pid), signal.SIGTERM)
-                    logger.info(f"Terminating process group {node_process.pid}")
-                except ProcessLookupError:
-                    logger.warning(
-                        f"Process group {node_process.pid} has been terminated."
-                    )
-
-        signal.signal(signal.SIGTERM, _cleanup_subprocesses)
-        signal.signal(signal.SIGINT, _cleanup_subprocesses)
-
-        for node_process in subprocesses:
-            node_process.wait()
-
-    except Exception as e:
-        logger.warning("Error in multiprocessing: ", e)
-        _cleanup_subprocesses()
-    finally:
-        _cleanup_subprocesses()
+    with NodeManager(dataflow_toml, False, config.redis_url) as node_manager:
+        node_manager.wait()
 
 
 @app.command(help="A nice debugging feature. Draw dataflows with Mermaid.")

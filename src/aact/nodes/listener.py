@@ -1,11 +1,7 @@
 import asyncio
-import sys
 from typing import Any, AsyncIterator, Optional, TYPE_CHECKING
 
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from ..utils import Self
 
 from ..messages.base import DataModel, Message
 from .base import Node
@@ -30,6 +26,7 @@ class ListenerNode(Node[Zero, Audio]):
     def __init__(
         self,
         output_channel: str,
+        name_name: str,
         redis_url: str,
         channels: int = 1,
         rate: int = 44100,
@@ -44,6 +41,7 @@ class ListenerNode(Node[Zero, Audio]):
         super().__init__(
             input_channel_types=[],
             output_channel_types=[(output_channel, Audio)],
+            node_name=name_name,
             redis_url=redis_url,
         )
         self.output_channel = output_channel
