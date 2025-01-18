@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response, HTTPException, File, UploadFile
+from fastapi import FastAPI, Response, File, UploadFile
 from fastapi.responses import PlainTextResponse, HTMLResponse, StreamingResponse
 from typing import Generator, Dict, Any
 from pydantic import BaseModel
@@ -71,17 +71,6 @@ async def get_html() -> str:
 async def get_binary() -> Response:
     content = b"Binary data response"
     return Response(content=content, media_type="application/octet-stream")
-
-
-# Status codes
-@app.get("/error/404")
-async def error_404() -> HTTPException:
-    raise HTTPException(status_code=404, detail="Item not found")
-
-
-@app.get("/error/500")
-async def error_500() -> HTTPException:
-    raise HTTPException(status_code=500, detail="Internal server error")
 
 
 class FileResponse(BaseModel):

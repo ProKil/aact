@@ -13,11 +13,13 @@ class RandomNode(Node[Tick, Float]):
         self,
         input_channel: str,
         output_channel: str,
+        node_name: str,
         redis_url: str = "redis://localhost:6379/0",
     ):
         super().__init__(
             input_channel_types=[(input_channel, Tick)],
             output_channel_types=[(output_channel, Float)],
+            node_name=node_name,
             redis_url=redis_url,
         )
         self.input_channel = input_channel

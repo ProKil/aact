@@ -77,6 +77,7 @@ class RestAPINode(Node[RestRequest, RestResponse]):
         output_channel: str,
         input_type_str: str,
         output_type_str: str,
+        node_name: str,
         redis_url: str,
     ):
         if input_type_str not in DataModelFactory.registry:
@@ -98,6 +99,7 @@ class RestAPINode(Node[RestRequest, RestResponse]):
         super().__init__(
             input_channel_types=[(input_channel, request_class)],
             output_channel_types=[(output_channel, response_class)],
+            node_name=node_name,
             redis_url=redis_url,
         )
 
