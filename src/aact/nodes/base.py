@@ -176,6 +176,16 @@ class Node(BaseModel, Generic[InputType, OutputType]):
         redis_url: str = "redis://localhost:6379/0",
     ):
         try:
+            for _, input_channel_type in input_channel_types:
+                if not issubclass(input_channel_type, DataModel):
+                    raise TypeError(
+                        f"Input channel type {input_channel_type} is not a subclass of DataModel"
+                    )
+            for _, output_channel_type in output_channel_types:
+                if not issubclass(output_channel_type, DataModel):
+                    raise TypeError(
+                        f"Output channel type {output_channel_type} is not a subclass of DataModel"
+                    )
             BaseModel.__init__(
                 self,
                 input_channel_types=dict(input_channel_types),

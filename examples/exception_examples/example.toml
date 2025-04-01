@@ -1,0 +1,13 @@
+redis_url = "redis://localhost:6379/0" # required
+extra_modules = ["exception_node"]
+
+[[nodes]]
+node_name = "exception_node"
+node_class = "exception_node"
+
+[nodes.node_args.print_channel_types]
+"tick/secs/1" = "tick"
+
+[[nodes]]
+node_name = "tick"
+node_class = "tick"
