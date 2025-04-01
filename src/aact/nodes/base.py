@@ -182,7 +182,7 @@ class Node(BaseModel, Generic[InputType, OutputType]):
                         f"Input channel type {input_channel_type} is not a subclass of DataModel"
                     )
                 elif (
-                    input_channel_type.model_fields["data_type"].annotation
+                    input_channel_type.model_fields["data_type"].annotation  # type: ignore[comparison-overlap]
                     == Literal[""]
                 ):
                     raise TypeError(
@@ -194,7 +194,7 @@ class Node(BaseModel, Generic[InputType, OutputType]):
                         f"Output channel type {output_channel_type} is not a subclass of DataModel"
                     )
                 elif (
-                    output_channel_type.model_fields["data_type"].annotation
+                    output_channel_type.model_fields["data_type"].annotation  # type: ignore[comparison-overlap]
                     == Literal[""]
                 ):
                     raise TypeError(

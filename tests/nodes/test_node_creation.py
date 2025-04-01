@@ -5,7 +5,7 @@ from aact.nodes import Node
 from aact.nodes import NodeFactory
 
 
-def test_node_with_non_datamodel_types():
+def test_node_with_non_datamodel_types() -> None:
     """Test that creating a node with non-DataModel types raises a TypeError."""
 
     class AWrong:
@@ -24,9 +24,9 @@ def test_node_with_non_datamodel_types():
                 output_channel_types=[("output", BWrong)],
             )
 
-        async def event_handler(
+        async def event_handler(  # type: ignore[override]
             self, input_channel: str, input_message: AWrong
-        ) -> None:  # type: ignore[override]
+        ) -> None:
             # Handle the event
             pass
 
@@ -40,7 +40,7 @@ def test_node_with_non_datamodel_types():
     )
 
 
-def test_node_with_unregistered_datamodel_types():
+def test_node_with_unregistered_datamodel_types() -> None:
     """Test that creating a node with unregistered DataModel types raises a TypeError."""
 
     class ACorrect(DataModel):
@@ -59,9 +59,9 @@ def test_node_with_unregistered_datamodel_types():
                 output_channel_types=[("output", BCorrect)],
             )
 
-        async def event_handler(
+        async def event_handler(  # type: ignore[override]
             self, input_channel: str, input_message: ACorrect
-        ) -> None:  # type: ignore[override]
+        ) -> None:
             # Handle the event
             pass
 
@@ -75,7 +75,7 @@ def test_node_with_unregistered_datamodel_types():
     )
 
 
-def test_node_with_registered_datamodel_types():
+def test_node_with_registered_datamodel_types() -> None:
     """Test that creating a node with properly registered DataModel types succeeds."""
 
     @DataModelFactory.register("ACorrectNew")
@@ -96,9 +96,9 @@ def test_node_with_registered_datamodel_types():
                 output_channel_types=[("output", BCorrectNew)],
             )
 
-        async def event_handler(
+        async def event_handler(  # type: ignore[override]
             self, input_channel: str, input_message: ACorrectNew
-        ) -> None:  # type: ignore[override]
+        ) -> None:
             # Handle the event
             pass
 
