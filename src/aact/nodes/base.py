@@ -3,7 +3,7 @@ import asyncio
 import logging
 
 from ..utils import Self
-from typing import Any, AsyncIterator, Generic, Type, TypeVar
+from typing import Any, AsyncIterator, Generic, Literal, Type, TypeVar
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from abc import abstractmethod
@@ -176,6 +176,30 @@ class Node(BaseModel, Generic[InputType, OutputType]):
         redis_url: str = "redis://localhost:6379/0",
     ):
         try:
+            for _, input_channel_type in input_channel_types:
+                if not issubclass(input_channel_type, DataModel):
+                    raise TypeError(
+                        f"Input channel type {input_channel_type} is not a subclass of DataModel"
+                    )
+                elif (
+                    input_channel_type.model_fields["data_type"].annotation  # type: ignore[comparison-overlap]
+                    == Literal[""]
+                ):
+                    raise TypeError(
+                        f"The input channel type {input_channel_type} needs to be registered with `@DataModelFactory.register`"
+                    )
+            for _, output_channel_type in output_channel_types:
+                if not issubclass(output_channel_type, DataModel):
+                    raise TypeError(
+                        f"Output channel type {output_channel_type} is not a subclass of DataModel"
+                    )
+                elif (
+                    output_channel_type.model_fields["data_type"].annotation  # type: ignore[comparison-overlap]
+                    == Literal[""]
+                ):
+                    raise TypeError(
+                        f"The output channel type {output_channel_type} needs to be registered with `@DataModelFactory.register`"
+                    )
             BaseModel.__init__(
                 self,
                 input_channel_types=dict(input_channel_types),
